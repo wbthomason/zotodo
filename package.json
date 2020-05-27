@@ -1,0 +1,41 @@
+{
+  "name": "zotodo",
+  "version": "0.0.1",
+  "description": "Add papers imported to Zotero as Todoist tasks",
+  "scripts": {
+    "lint": "tslint -t stylish --project .",
+    "prebuild": "npm run lint",
+    "build": "webpack",
+    "postbuild": "zotero-plugin-zipup build zotodo",
+    "release": "zotero-plugin-release",
+    "postversion": "git push --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbthomason/zotodo.git"
+  },
+  "author": {
+    "name": "Wil Thomason",
+    "email": "wil.thomason@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/wbthomason/zotodo/issues"
+  },
+  "homepage": "https://github.com/wbthomason/zotodo",
+  "dependencies": {
+    "circular-dependency-plugin": "^5.2.0",
+    "post-compile-webpack-plugin": "^0.1.2",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^7.0.5",
+    "ts-node": "^8.10.1",
+    "tslint": "^6.1.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "zotero-plugin": "1.0.20"
+  },
+  "xpi": {
+    "name": "Zotodo for Zotero",
+    "updateLink": "https://github.com/wbthomason/zotodo/releases/download/v{version}/zotodo-{version}.xpi",
+    "releaseURL": "https://github.com/wbthomason/zotodo/releases/download/release/"
+  }
+}

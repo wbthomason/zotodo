@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://zotero-zotodo/skin/overlay.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://zotero-zotodo/locale/zotero-zotodo.dtd">
+
+<overlay id="zotero-zotodo-overlay"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<!-- Include the main extension logic -->
+  <script src="chrome://zotero/content/include.js"/>
+  <script src="chrome://zotero-zotodo/content/webpack.js"/>
+  <script src="chrome://zotero-zotodo/content/Zotodo.js"/>
+</overlay>
