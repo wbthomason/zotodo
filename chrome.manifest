@@ -1,5 +1,5 @@
-content	zotero-zotodo				content/
-locale	zotero-zotodo	en-US		locale/en-US/
-skin	zotero-zotodo	default		skin/
+content	zotodo				content/
+locale	zotodo	en-US		locale/en-US/
+skin	zotodo	default		skin/
 
-overlay	chrome://zotero/content/zoteroPane.xul	chrome://zotero-zotodo/content/overlay.xul
+overlay	chrome://zotero/content/zoteroPane.xul	chrome://zotodo/content/overlay.xul

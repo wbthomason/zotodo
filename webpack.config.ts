@@ -75,7 +75,7 @@ const config = {
   context: path.resolve(__dirname, './content'),
 
   entry: {
-    Zotodo: './zotero-zotodo.ts',
+    Zotodo: './zotodo.ts',
   },
 
   output: {
