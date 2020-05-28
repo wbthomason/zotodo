@@ -1,6 +1,29 @@
 Zotodo
 =================
 
-Install by downloading the [latest version](https://github.com/wbthomason/zotodo/releases/latest)
+Add Todoist tasks for papers in Zotero. Install by downloading the [latest version](https://github.com/wbthomason/zotodo/releases/latest).
+Scaffolded with the wonderful
+[`generator-zotero-plugin`](https://github.com/retorquere/generator-zotero-plugin).
 
-Add papers imported to Zotero as Todoist tasks
+## Features
+- Automatically generate Todoist tasks when new papers are imported
+- Generate Todoist tasks for existing papers
+- Templating of task and optional task comment, including paper information (authors, title,
+  abstract, etc.)
+- Customizable project and due date settings
+- Customizable labels for tasks
+
+## Configuration
+- See "Zotodo Preferences" in the "Tools" menu.
+
+## Notes
+- You **must** set your Todoist API key in the preferences for this plugin to work. OAuth might be
+  implemented eventually, but it's not there right now.
+- Make sure that the project and labels you set in the preferences already exist in your Todoist
+  account.
+
+## TODO/Future features
+- [ ] Create project/labels if nonexistent
+- [ ] OAuth flow for getting authorization key
+- [ ] Set project by Zotero collection
+- [ ] Add more template tokens
