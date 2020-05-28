@@ -1,6 +1,6 @@
 {
   "name": "zotodo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Add papers imported to Zotero as Todoist tasks",
   "scripts": {
     "lint": "tslint -t stylish --project .",
@@ -34,7 +34,7 @@
     "zotero-plugin": "1.0.20"
   },
   "xpi": {
-    "name": "Zotodo for Zotero",
+    "name": "Zotodo",
     "updateLink": "https://github.com/wbthomason/zotodo/releases/download/v{version}/zotodo-{version}.xpi",
     "releaseURL": "https://github.com/wbthomason/zotodo/releases/download/release/"
   }

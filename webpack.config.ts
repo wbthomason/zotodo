@@ -76,6 +76,7 @@ const config = {
 
   entry: {
     Zotodo: './zotodo.ts',
+    'Zotodo.Options': './options.ts',
   },
 
   output: {

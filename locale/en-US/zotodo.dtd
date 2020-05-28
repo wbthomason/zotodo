@@ -1,1 +1,20 @@
-<!ENTITY zotero.zotodo "Add papers imported to Zotero as Todoist tasks">
+<!ENTITY zotero.zotodo "Add Todoist tasks for imported Zotero papers">
+<!ENTITY zotodo-make-task.label "Create Todoist task">
+<!ENTITY zotodo-make-task.tooltiptext "Make a Todoist task for the currently selected items">
+<!ENTITY zotodo-options.label "Zotodo Preferences">
+<!ENTITY zotodo-preferences "Zotodo Preferences">
+<!ENTITY zotodo-prefpane "Zotodo Preferences">
+<!ENTITY todoist-settings "Todoist-related settings">
+<!ENTITY todoist-token "Todoist API token">
+<!ENTITY project "Project for new tasks">
+<!ENTITY set-due "Should Zotodo set a due date?">
+<!ENTITY due-string "Natural language (English) string for due date">
+<!ENTITY labels "Comma-separated list of Todoist labels to apply to new tasks">
+<!ENTITY priority "Priority for new tasks">
+<!ENTITY zotero-settings "Zotero-related settings">
+<!ENTITY task-format "Javascript template string for new tasks">
+<!ENTITY list-of-wildcards "Acceptable tokens: ${authors}, ${title}, ${abstract}, ${url}, ${doi}, ${attachment_path}, ${et_al}. Use ?<token>:<text>? to only include <text> if <token> is defined for an item. Use !<token>:<text>! to only include <text> if <token> is not defined for an item.">
+<!ENTITY include-note "Should Zotodo add a comment to new tasks?">
+<!ENTITY note-format "Javascript template string for comments">
+<!ENTITY automatic-add "Should Zotodo add tasks for every newly added item?">
+<!ENTITY ignore-collections "Comma-separated list of collection names for which Zotodo should not create tasks">

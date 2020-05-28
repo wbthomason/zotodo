@@ -3,10 +3,23 @@
 <!DOCTYPE window SYSTEM "chrome://zotodo/locale/zotodo.dtd">
 
 <overlay id="zotodo-overlay"
-	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	
-	<!-- Include the main extension logic -->
-  <script src="chrome://zotero/content/include.js"/>
-  <script src="chrome://zotodo/content/webpack.js"/>
-  <script src="chrome://zotodo/content/Zotodo.js"/>
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<menupopup id="zotero-itemmenu">
+  <menuseparator id="id-zotodo-separator"/>
+  <menuitem id="id-zotodo-make-task" label="&zotodo-make-task.label;" tooltiptext="&zotodo-make-task.tooltiptext;" oncommand="Zotero.Zotodo.makeTaskForSelectedItems();"/>
+</menupopup>
+
+<menupopup id="zotero-tb-actions-popup">
+  <menuitem id="zotodo-options" insertafter="zotero-tb-actions-prefs" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
+</menupopup>
+
+<menupopup id="menu_ToolsPopup">
+  <menuitem id="zotodo-options" insertafter="menu_preferences" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
+</menupopup>
+
+<!-- Include the main extension logic -->
+<script src="chrome://zotero/content/include.js"/>
+<script src="chrome://zotodo/content/webpack.js"/>
+<script src="chrome://zotodo/content/Zotodo.js"/>
 </overlay>

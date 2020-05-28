@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
+<!DOCTYPE window SYSTEM "chrome://zotodo/locale/zotodo.dtd">
+
+<prefwindow id="zotodo-pref" title="&zotodo-preferences;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.Zotodo.Options.updatePreferenceWindow('init-all');">
+  <prefpane label="&zotodo-prefpane;" id="zotodo-prefpane">
+    <preferences>
+      <preference id="pref-zotodo-automatic-add" name="extensions.zotodo.automatic_add" type="bool"/>
+      <preference id="pref-zotodo-ignore-collections" name="extensions.zotodo.ignore_collections" type="string"/>
+      <preference id="pref-zotodo-include-note" name="extensions.zotodo.include_note" type="bool"/>
+      <preference id="pref-zotodo-note-format" name="extensions.zotodo.note_format" type="string"/>
+      <preference id="pref-zotodo-due-string" name="extensions.zotodo.due_string" type="string"/>
+      <preference id="pref-zotodo-priority" name="extensions.zotodo.priority" type="int"/>
+      <preference id="pref-zotodo-project" name="extensions.zotodo.project" type="string"/>
+      <preference id="pref-zotodo-set-due" name="extensions.zotodo.set_due" type="bool"/>
+      <preference id="pref-zotodo-labels" name="extensions.zotodo.labels" type="string"/>
+      <preference id="pref-zotodo-task-format" name="extensions.zotodo.task_format" type="string"/>
+      <preference id="pref-zotodo-todoist-token" name="extensions.zotodo.todoist_token" type="string"/>
+    </preferences>
+
+    <groupbox>
+      <caption label="&todoist-settings;"/>
+      <separator/>
+
+      <label id="id-zotodo-todoist-token-label" value="&todoist-token;" control="id-zotodo-todoist-token"/>
+      <textbox id="id-zotodo-todoist-token" preference="pref-zotodo-todoist-token" flex="1"/>
+      <separator/>
+
+      <label id="id-zotodo-project-label" value="&project;" control="id-zotodo-project"/>
+      <textbox id="id-zotodo-project" preference="pref-zotodo-project" flex="1"/>
+      <separator/>
+
+      <checkbox id="id-zotodo-set-due" preference="pref-zotodo-set-due" label="&set-due;" oncommand="Zotero.Zotodo.Options.updatePreferenceWindow('set-due')"/>
+      <separator/>
+
+      <label id="id-zotodo-due-string-label" value="&due-string;" control="id-zotodo-due-string"/>
+      <textbox id="id-zotodo-due-string" preference="pref-zotodo-due-string" flex="1"/>
+      <separator/>
+
+      <label id="id-zotodo-labels-label" value="&labels;" control="id-zotodo-labels"/>
+      <textbox id="id-zotodo-labels" preference="pref-zotodo-labels" flex="1"/>
+      <separator/>
+
+      <label id="id-zotodo-priority-label" value="&priority;" control="id-zotodo-priority"/>
+      <textbox id="id-zotodo-priority" min="1" max="4" type="number" preference="pref-zotodo-priority" flex="1"/>
+      <separator/>
+    </groupbox>
+    <separator/>
+    <groupbox>
+      <caption label="&zotero-settings;"/>
+      <separator/>
+
+      <label id="id-zotodo-task-format-label" value="&task-format;" control="id-zotodo-task-format"/>
+      <textbox id="id-zotodo-task-format" preference="pref-zotodo-task-format" flex="1"/>
+      <label id="id-zotodo-task-format-wildcards" style="font-size: 10px" value="&list-of-wildcards;"/>
+      <separator/>
+
+      <checkbox id="id-zotodo-include-note" preference="pref-zotodo-include-note" label="&include-note;" oncommand="Zotero.Zotodo.Options.updatePreferenceWindow('include-note')"/>
+      <label id="id-zotodo-note-format" value="&note-format;" control="id-zotodo-note-format"/>
+      <textbox id="id-zotodo-note-format" preference="pref-zotodo-note-format" flex="1"/>
+      <label id="id-zotodo-note-format-wildcards" style="font-size: 10px" value="&list-of-wildcards;"/>
+      <separator/>
+
+
+      <checkbox id="id-zotodo-automatic-add" preference="pref-zotodo-automatic-add" label="&automatic-add;"/>
+      <separator/>
+
+      <label id="id-zotodo-ignore-collections-label" value="&ignore-collections;" control="id-zotodo-ignore-collections"/>
+      <textbox id="id-zotodo-ignore-collections" preference="pref-zotodo-ignore-collections" flex="1"/>
+    </groupbox>
+
+    <script src="chrome://zotero/content/include.js"/>
+    <script src="chrome://zotodo/content/webpack.js"/>
+    <script src="chrome://zotodo/content/Zotodo.Options.js"/>
+  </prefpane>
+</prefwindow>
