@@ -344,7 +344,8 @@ const Zotodo = // tslint:disable-line:variable-name
       const ignore_collections: string[] = (getPref(
         'ignore_collections'
       ) as string).split(',')
-      const priority: number = getPref('priority')
+      // Priority is the reverse of what you'd expect from the p1, p2, etc. pattern
+      const priority: number = 5 - getPref('priority') // tslint:disable-line:no-magic-numbers
       const project_name: string = getPref('project')
       const set_due: boolean = getPref('set_due')
       const include_note: boolean = getPref('include_note')
