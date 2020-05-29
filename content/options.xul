@@ -57,6 +57,7 @@
       <separator/>
 
       <checkbox id="id-zotodo-include-note" preference="pref-zotodo-include-note" label="&include-note;" oncommand="Zotero.Zotodo.Options.updatePreferenceWindow('include-note')"/>
+      <separator/>
       <label id="id-zotodo-note-format" value="&note-format;" control="id-zotodo-note-format"/>
       <textbox id="id-zotodo-note-format" preference="pref-zotodo-note-format" flex="1"/>
       <label id="id-zotodo-note-format-wildcards" style="font-size: 10px" value="&list-of-wildcards;"/>
