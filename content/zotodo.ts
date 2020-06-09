@@ -101,8 +101,8 @@ class TaskData {
 
 class TodoistAPI {
   private token: string = null
-  private projects: Record<string, number> = {}
-  private labels: Record<string, number> = {}
+  private projects: Record<string, number> = null
+  private labels: Record<string, number> = null
 
   constructor(token: string) {
     this.token = token
@@ -117,26 +117,42 @@ class TodoistAPI {
       this.token = getPref('todoist_token')
     }
 
-    if (this.projects == null || !(task_data.project_name in this.projects)) {
+    if (this.projects == null) {
       this.projects = await this.getProjects(progWin)
+      if (this.projects == null) {
+        showError('Failed to get projects!', progWin)
+        return
+      }
     }
 
-    if (this.projects == null) {
-      showError('Failed to get projects!', progWin)
-      return
+    if (!(task_data.project_name in this.projects)) {
+      const project_result = await this.createProject(
+        task_data.project_name,
+        progWin
+      )
+      if (!project_result) {
+        return
+      }
     }
 
     const project_id = this.projects[task_data.project_name]
 
     const label_ids = []
     for (const label_name of task_data.label_names) {
-      if (this.labels == null || !(label_name in this.labels)) {
+      if (this.labels == null) {
         this.labels = await this.getLabels(progWin)
+
+        if (this.labels == null) {
+          showError('Failed to get labels!', progWin)
+          return
+        }
       }
 
-      if (this.labels == null) {
-        showError('Failed to get labels!', progWin)
-        return
+      if (!(label_name in this.labels)) {
+        const label_result = await this.createLabel(label_name, progWin)
+        if (!label_result) {
+          return
+        }
       }
 
       label_ids.push(this.labels[label_name])
@@ -206,6 +222,66 @@ class TodoistAPI {
     }
 
     showSuccess(task_data, progWin)
+  }
+
+  private async createProject(
+    project_name: string,
+    progWin: object
+  ): Promise<boolean> {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.token}`,
+    }
+
+    const payload = { name: project_name }
+    const response = await fetch('https://api.todoist.com/rest/v1/projects', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      const err = await response.text()
+      const msg = `Error creating project ${project_name}: ${response.statusText} ${err}`
+      showError(msg, progWin)
+      Zotero.logError(msg)
+      return false
+    }
+
+    const data = await response.json()
+    this.projects[data.name] = data.id
+
+    return true
+  }
+
+  private async createLabel(
+    label_name: string,
+    progWin: object
+  ): Promise<boolean> {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.token}`,
+    }
+
+    const payload = { name: label_name }
+    const response = await fetch('https://api.todoist.com/rest/v1/labels', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      const err = await response.text()
+      const msg = `Error creating label ${label_name}: ${response.statusText} ${err}`
+      showError(msg, progWin)
+      Zotero.logError(msg)
+      return false
+    }
+
+    const data = await response.json()
+    this.labels[data.name] = data.id
+
+    return true
   }
 
   private async getAll(
