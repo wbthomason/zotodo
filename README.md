@@ -1,5 +1,4 @@
-Zotodo
-=================
+# Zotodo
 
 Add Todoist tasks for papers in Zotero. Install by downloading the [latest version](https://github.com/wbthomason/zotodo/releases/latest).
 Scaffolded with the wonderful
@@ -12,6 +11,12 @@ Scaffolded with the wonderful
   abstract, etc.)
 - Customizable project and due date settings
 - Customizable labels for tasks
+
+## Installation
+1. Download the [latest version](https://github.com/wbthomason/zotodo/releases/latest) of the `.xpi`.
+2. In Zotero, go to Tools > Add-ons.
+3. Click the  gear icon in the upper right corner, and select "Install Add-On From File".
+4. Navigate to where you downloaded the Zotodo `.xpi` and select it.
 
 ## Configuration
 - See "Zotodo Preferences" in the "Tools" menu.
