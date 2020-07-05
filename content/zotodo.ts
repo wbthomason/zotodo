@@ -471,6 +471,7 @@ const Zotodo = // tslint:disable-line:variable-name
       }
 
       const authors = author_names.join(',')
+      const item_id = item.id
       const tokens = {
         title,
         abstract,
@@ -479,6 +480,7 @@ const Zotodo = // tslint:disable-line:variable-name
         attachment_path,
         et_al,
         authors,
+        item_id,
       }
 
       for (const token_name of Object.keys(tokens)) {
