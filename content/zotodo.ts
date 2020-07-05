@@ -442,14 +442,18 @@ const Zotodo = // tslint:disable-line:variable-name
       const abstract: string = item.getField('abstractNote', false, true)
       const url: string = item.getField('url', false, true)
       const doi: string = item.getField('DOI', false, true)
-      let attachment_path = ''
+      let pdf_path = ''
+      let pdf_id = -1
       const attachments: number[] = item.getAttachments()
       if (attachments.length > 0) {
-        attachment_path = Zotero.Items.get(attachments[0]).getField(
-          'attachmentPath',
-          false,
-          true
-        )
+        for (const id of attachments) {
+          const attachment = Zotero.Items.get(id)
+          if (attachment.attachmentContentType === 'application/pdf') {
+            pdf_path = attachment.attachmentPath
+            pdf_id = attachment.key
+            break
+          }
+        }
       }
 
       const author_type_id: number = Zotero.CreatorTypes.getPrimaryIDForType(
@@ -471,13 +475,14 @@ const Zotodo = // tslint:disable-line:variable-name
       }
 
       const authors = author_names.join(',')
-      const item_id = item.id
+      const item_id = item.key
       const tokens = {
         title,
         abstract,
         url,
         doi,
-        attachment_path,
+        pdf_path,
+        pdf_id,
         et_al,
         authors,
         item_id,
