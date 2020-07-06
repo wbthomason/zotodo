@@ -84,6 +84,7 @@ class TaskData {
   public note: string = null
   public due_string: string = null
   public project_name: string
+  public section_name: string = null
   public priority: number
   public label_names: string[]
   constructor(
@@ -103,6 +104,7 @@ class TodoistAPI {
   private token: string = null
   private projects: Record<string, number> = null
   private labels: Record<string, number> = null
+  private sections: Record<string, Record<string, number>> = {}
 
   constructor(token: string) {
     this.token = token
@@ -117,45 +119,27 @@ class TodoistAPI {
       this.token = getPref('todoist_token')
     }
 
-    if (this.projects == null) {
-      this.projects = await this.getProjects(progWin)
-      if (this.projects == null) {
-        showError('Failed to get projects!', progWin)
-        return
-      }
+    const project_id = await this.getProjectId(task_data.project_name, progWin)
+    if (project_id == null) {
+      return
     }
 
-    if (!(task_data.project_name in this.projects)) {
-      const project_result = await this.createProject(
-        task_data.project_name,
-        progWin
-      )
-      if (!project_result) {
-        return
-      }
+    let section_id = null
+    if(task_data.section_name != null) {
+     section_id = await this.getSectionId(task_data.section_name, task_data.project_name, progWin)
+     if (section_id == null) {
+      return
+     }
     }
-
-    const project_id = this.projects[task_data.project_name]
 
     const label_ids = []
     for (const label_name of task_data.label_names) {
-      if (this.labels == null) {
-        this.labels = await this.getLabels(progWin)
-
-        if (this.labels == null) {
-          showError('Failed to get labels!', progWin)
-          return
-        }
+      const label_id = await this.getLabelId(label_name, progWin)
+      if(label_id == null) {
+        return
       }
 
-      if (!(label_name in this.labels)) {
-        const label_result = await this.createLabel(label_name, progWin)
-        if (!label_result) {
-          return
-        }
-      }
-
-      label_ids.push(this.labels[label_name])
+      label_ids.push(label_id)
     }
 
     const createPayload: { [k: string]: any } = {
@@ -163,6 +147,10 @@ class TodoistAPI {
       project_id,
       label_ids,
       priority: task_data.priority,
+    }
+
+    if(section_id != null) {
+      createPayload.section_id = section_id
     }
 
     if (task_data.due_string != null) {
@@ -222,6 +210,110 @@ class TodoistAPI {
     }
 
     showSuccess(task_data, progWin)
+  }
+
+  private async getSectionId(section_name: string, project_name: string, progress_win: object): Promise<number | null> {
+    if (this.sections[project_name] == undefined) {
+      const project_sections = await this.getSections(project_name, progress_win)
+      if (project_sections == null) {
+        showError('Failed to get sections!', progress_win)
+        return null
+      }
+
+      this.sections[project_name] = project_sections
+    }
+
+    if (!(section_name in this.sections[project_name])) {
+      const section_result = await this.createSection(
+        section_name,
+        project_name,
+        progress_win
+      )
+
+      if (!section_result) {
+        return null
+      }
+    }
+
+    return this.sections[project_name][section_name]
+  }
+
+  private async getProjectId(project_name: string, progress_win: object): Promise<number | null> {
+    if (this.projects == null) {
+      this.projects = await this.getProjects(progress_win)
+      if (this.projects == null) {
+        showError('Failed to get projects!', progress_win)
+        return null
+      }
+    }
+
+    if (!(project_name in this.projects)) {
+      const project_result = await this.createProject(
+        project_name,
+        progress_win
+      )
+      if (!project_result) {
+        return null
+      }
+    }
+
+    return this.projects[project_name]
+  }
+
+  private async getLabelId(label_name: string, progress_win: object): Promise<number | null> {
+      if (this.labels == null) {
+        this.labels = await this.getLabels(progress_win)
+
+        if (this.labels == null) {
+          showError('Failed to get labels!', progress_win)
+          return null
+        }
+      }
+
+      if (!(label_name in this.labels)) {
+        const label_result = await this.createLabel(label_name, progress_win)
+        if (!label_result) {
+          return null
+        }
+      }
+
+      return this.labels[label_name]
+  }
+
+  private async createSection(
+    section_name: string,
+    project_name: string,
+    progWin: object
+  ): Promise<boolean> {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.token}`,
+    }
+
+    const project_id = await this.getProjectId(project_name, progWin)
+    if(project_id == null) {
+      return
+    }
+
+    const payload = { name: section_name, project_id }
+    const response = await fetch('https://api.todoist.com/rest/v1/sections', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      const err = await response.text()
+      const msg = `Error creating section ${section_name} in project ${project_name}: ${response.statusText} ${err}`
+      showError(msg, progWin)
+      Zotero.logError(msg)
+      return false
+    }
+
+    const data = await response.json()
+    this.sections[project_name][data.name] = data.id
+
+    return true
   }
 
   private async createProject(
@@ -313,6 +405,15 @@ class TodoistAPI {
     }
 
     return items
+  }
+
+  private async getSections(project_name: string, progWin: object): Promise<Record<string, number>> {
+    const project_id = await this.getProjectId(project_name, progWin)
+    if(project_id == null) {
+      return
+    }
+
+    return this.getAll(`https://api.todoist.com/rest/v1/sections?project_id=${project_id}`, progWin)
   }
 
   private async getProjects(progWin: object): Promise<Record<string, number>> {
@@ -423,6 +524,8 @@ const Zotodo = // tslint:disable-line:variable-name
       // Priority is the reverse of what you'd expect from the p1, p2, etc. pattern
       const priority: number = 5 - getPref('priority') // tslint:disable-line:no-magic-numbers
       const project_name: string = getPref('project')
+      const section_name: string = getPref('section')
+
       const set_due: boolean = getPref('set_due')
       const include_note: boolean = getPref('include_note')
       let note_format: string = getPref('note_format')
@@ -523,6 +626,10 @@ const Zotodo = // tslint:disable-line:variable-name
 
       if (set_due) {
         task_data.due_string = due_string
+      }
+
+      if(section_name !== '') {
+        task_data.section_name = section_name
       }
 
       this.todoist.createTask(task_data)

@@ -13,6 +13,7 @@
       <preference id="pref-zotodo-due-string" name="extensions.zotodo.due_string" type="string"/>
       <preference id="pref-zotodo-priority" name="extensions.zotodo.priority" type="int"/>
       <preference id="pref-zotodo-project" name="extensions.zotodo.project" type="string"/>
+      <preference id="pref-zotodo-section" name="extensions.zotodo.section" type="string"/>
       <preference id="pref-zotodo-set-due" name="extensions.zotodo.set_due" type="bool"/>
       <preference id="pref-zotodo-labels" name="extensions.zotodo.labels" type="string"/>
       <preference id="pref-zotodo-task-format" name="extensions.zotodo.task_format" type="string"/>
@@ -29,6 +30,10 @@
 
       <label id="id-zotodo-project-label" value="&project;" control="id-zotodo-project"/>
       <textbox id="id-zotodo-project" preference="pref-zotodo-project" flex="1"/>
+      <separator/>
+
+      <label id="id-zotodo-section-label" value="&section;" control="id-zotodo-section"/>
+      <textbox id="id-zotodo-section" preference="pref-zotodo-section" flex="1"/>
       <separator/>
 
       <checkbox id="id-zotodo-set-due" preference="pref-zotodo-set-due" label="&set-due;" oncommand="Zotero.Zotodo.Options.updatePreferenceWindow('set-due')"/>

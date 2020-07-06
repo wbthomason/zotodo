@@ -7,6 +7,7 @@
 <!ENTITY todoist-settings "Todoist-related settings">
 <!ENTITY todoist-token "Todoist API token">
 <!ENTITY project "Project for new tasks">
+<!ENTITY section "Section for new tasks (leave empty for none)">
 <!ENTITY set-due "Should Zotodo set a due date?">
 <!ENTITY due-string "Natural language (English) string for due date">
 <!ENTITY labels "Comma-separated list of Todoist labels to apply to new tasks">
