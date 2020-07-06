@@ -9,7 +9,7 @@ Scaffolded with the wonderful
 - Generate Todoist tasks for existing papers
 - Templating of task and optional task comment, including paper information (authors, title,
   abstract, etc.)
-- Customizable project and due date settings
+- Customizable project, section, and due date settings
 - Customizable labels for tasks
 
 ## Installation
