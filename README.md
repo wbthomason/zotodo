@@ -11,6 +11,7 @@ Scaffolded with the wonderful
   abstract, etc.)
 - Customizable project, section, and due date settings
 - Customizable labels for tasks
+- Generate Zotero select links
 
 ## Installation
 1. Download the [latest version](https://github.com/wbthomason/zotodo/releases/latest) of the `.xpi`.
@@ -24,6 +25,8 @@ Scaffolded with the wonderful
 ## Notes
 - You **must** set your Todoist API key in the preferences for this plugin to work. OAuth might be
   implemented eventually, but it's not there right now.
+- For select links to work, you may need to set up handling of the `zotero://` protocol on your
+  computer.
 
 ## TODO/Future features
 - [x] Create project/labels if nonexistent

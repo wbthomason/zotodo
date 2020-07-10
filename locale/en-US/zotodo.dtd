@@ -14,7 +14,7 @@
 <!ENTITY priority "Priority for new tasks">
 <!ENTITY zotero-settings "Zotero-related settings">
 <!ENTITY task-format "Javascript template string for new tasks">
-<!ENTITY list-of-wildcards "Acceptable tokens: ${authors}, ${title}, ${abstract}, ${url}, ${doi}, ${pdf_path} ${pdf_id}, ${item_id}, ${et_al}. Use ?${token}:text? to only include 'text' if ${token} is defined for an item. Use !${token}:text! to only include 'text' if ${token} is not defined for an item.">
+<!ENTITY list-of-wildcards "Acceptable tokens: ${authors}, ${title}, ${abstract}, ${url}, ${doi}, ${pdf_path} ${pdf_id}, ${item_id}, ${select_uri}, ${et_al}. Use ?${token}:text? to only include 'text' if ${token} is defined for an item. Use !${token}:text! to only include 'text' if ${token} is not defined for an item.">
 <!ENTITY include-note "Should Zotodo add a comment to new tasks?">
 <!ENTITY note-format "Javascript template string for comments">
 <!ENTITY automatic-add "Should Zotodo add tasks for every newly added item?">

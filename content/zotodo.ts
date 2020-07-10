@@ -125,17 +125,21 @@ class TodoistAPI {
     }
 
     let section_id = null
-    if(task_data.section_name != null) {
-     section_id = await this.getSectionId(task_data.section_name, task_data.project_name, progWin)
-     if (section_id == null) {
-      return
-     }
+    if (task_data.section_name != null) {
+      section_id = await this.getSectionId(
+        task_data.section_name,
+        task_data.project_name,
+        progWin
+      )
+      if (section_id == null) {
+        return
+      }
     }
 
     const label_ids = []
     for (const label_name of task_data.label_names) {
       const label_id = await this.getLabelId(label_name, progWin)
-      if(label_id == null) {
+      if (label_id == null) {
         return
       }
 
@@ -149,7 +153,7 @@ class TodoistAPI {
       priority: task_data.priority,
     }
 
-    if(section_id != null) {
+    if (section_id != null) {
       createPayload.section_id = section_id
     }
 
@@ -212,9 +216,16 @@ class TodoistAPI {
     showSuccess(task_data, progWin)
   }
 
-  private async getSectionId(section_name: string, project_name: string, progress_win: object): Promise<number | null> {
+  private async getSectionId(
+    section_name: string,
+    project_name: string,
+    progress_win: object
+  ): Promise<number | null> {
     if (this.sections[project_name] == undefined) {
-      const project_sections = await this.getSections(project_name, progress_win)
+      const project_sections = await this.getSections(
+        project_name,
+        progress_win
+      )
       if (project_sections == null) {
         showError('Failed to get sections!', progress_win)
         return null
@@ -238,7 +249,10 @@ class TodoistAPI {
     return this.sections[project_name][section_name]
   }
 
-  private async getProjectId(project_name: string, progress_win: object): Promise<number | null> {
+  private async getProjectId(
+    project_name: string,
+    progress_win: object
+  ): Promise<number | null> {
     if (this.projects == null) {
       this.projects = await this.getProjects(progress_win)
       if (this.projects == null) {
@@ -260,24 +274,27 @@ class TodoistAPI {
     return this.projects[project_name]
   }
 
-  private async getLabelId(label_name: string, progress_win: object): Promise<number | null> {
+  private async getLabelId(
+    label_name: string,
+    progress_win: object
+  ): Promise<number | null> {
+    if (this.labels == null) {
+      this.labels = await this.getLabels(progress_win)
+
       if (this.labels == null) {
-        this.labels = await this.getLabels(progress_win)
-
-        if (this.labels == null) {
-          showError('Failed to get labels!', progress_win)
-          return null
-        }
+        showError('Failed to get labels!', progress_win)
+        return null
       }
+    }
 
-      if (!(label_name in this.labels)) {
-        const label_result = await this.createLabel(label_name, progress_win)
-        if (!label_result) {
-          return null
-        }
+    if (!(label_name in this.labels)) {
+      const label_result = await this.createLabel(label_name, progress_win)
+      if (!label_result) {
+        return null
       }
+    }
 
-      return this.labels[label_name]
+    return this.labels[label_name]
   }
 
   private async createSection(
@@ -291,7 +308,7 @@ class TodoistAPI {
     }
 
     const project_id = await this.getProjectId(project_name, progWin)
-    if(project_id == null) {
+    if (project_id == null) {
       return
     }
 
@@ -407,13 +424,19 @@ class TodoistAPI {
     return items
   }
 
-  private async getSections(project_name: string, progWin: object): Promise<Record<string, number>> {
+  private async getSections(
+    project_name: string,
+    progWin: object
+  ): Promise<Record<string, number>> {
     const project_id = await this.getProjectId(project_name, progWin)
-    if(project_id == null) {
+    if (project_id == null) {
       return
     }
 
-    return this.getAll(`https://api.todoist.com/rest/v1/sections?project_id=${project_id}`, progWin)
+    return this.getAll(
+      `https://api.todoist.com/rest/v1/sections?project_id=${project_id}`,
+      progWin
+    )
   }
 
   private async getProjects(progWin: object): Promise<Record<string, number>> {
@@ -579,6 +602,12 @@ const Zotodo = // tslint:disable-line:variable-name
 
       const authors = author_names.join(',')
       const item_id = item.key
+      let library_path = 'library'
+      if (Zotero.Libraries.get(item.libraryID).libraryType === 'group') {
+        library_path = Zotero.URI.getLibraryPath(item.libraryID)
+      }
+
+      const select_uri = `zotero://select/${library_path}/items/${item_id}`
       const tokens = {
         title,
         abstract,
@@ -589,6 +618,7 @@ const Zotodo = // tslint:disable-line:variable-name
         et_al,
         authors,
         item_id,
+        select_uri,
       }
 
       for (const token_name of Object.keys(tokens)) {
@@ -628,7 +658,7 @@ const Zotodo = // tslint:disable-line:variable-name
         task_data.due_string = due_string
       }
 
-      if(section_name !== '') {
+      if (section_name !== '') {
         task_data.section_name = section_name
       }
 
