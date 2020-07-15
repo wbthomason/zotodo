@@ -149,8 +149,11 @@ class TodoistAPI {
     const createPayload: { [k: string]: any } = {
       content: task_data.contents,
       project_id,
-      label_ids,
       priority: task_data.priority,
+    }
+
+    if (label_ids.length > 0) {
+      createPayload.label_ids = label_ids
     }
 
     if (section_id != null) {
@@ -540,7 +543,12 @@ const Zotodo = // tslint:disable-line:variable-name
     private async makeTaskForItem(item: ZoteroItem) {
       // Get the current preference values
       const due_string: string = getPref('due_string')
-      const label_names: string[] = (getPref('labels') as string).split(',')
+      const label_names_string: string = (getPref('labels') as string)
+      let label_names: string[] = []
+      if(label_names_string !== ''){
+        label_names = label_names_string.split(',')
+      }
+
       const ignore_collections: string[] = (getPref(
         'ignore_collections'
       ) as string).split(',')
