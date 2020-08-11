@@ -543,9 +543,9 @@ const Zotodo = // tslint:disable-line:variable-name
     private async makeTaskForItem(item: ZoteroItem) {
       // Get the current preference values
       const due_string: string = getPref('due_string')
-      const label_names_string: string = (getPref('labels') as string)
+      const label_names_string: string = getPref('labels') as string
       let label_names: string[] = []
-      if(label_names_string !== ''){
+      if (label_names_string !== '') {
         label_names = label_names_string.split(',')
       }
 
@@ -616,6 +616,16 @@ const Zotodo = // tslint:disable-line:variable-name
       }
 
       const select_uri = `zotero://select/${library_path}/items/${item_id}`
+      let citekey = ''
+      if (
+        typeof Zotero.BetterBibTeX === 'object' &&
+        Zotero.BetterBibTeX !== null
+      ) {
+        citekey = Zotero.BetterBibTeX.KeyManager.get(
+          item.getField('id', false, true)
+        ).citekey
+      }
+
       const tokens = {
         title,
         abstract,
@@ -627,6 +637,7 @@ const Zotodo = // tslint:disable-line:variable-name
         authors,
         item_id,
         select_uri,
+        citekey,
       }
 
       for (const token_name of Object.keys(tokens)) {
