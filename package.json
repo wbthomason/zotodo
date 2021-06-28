@@ -1,6 +1,6 @@
 {
   "name": "zotodo",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Add papers imported to Zotero as Todoist tasks",
   "scripts": {
     "lint": "tslint -t stylish --project .",
