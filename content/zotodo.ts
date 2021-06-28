@@ -608,7 +608,7 @@ const Zotodo = // tslint:disable-line:variable-name
         et_al = author_names[0] + ' et al.'
       }
 
-      const authors = author_names.join(',')
+      const authors = author_names.join(', ')
       const item_id = item.key
       let library_path = 'library'
       if (Zotero.Libraries.get(item.libraryID).libraryType === 'group') {
