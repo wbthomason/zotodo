@@ -31,7 +31,7 @@
     "tslint": "^6.1.2",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
-    "zotero-plugin": "1.0.22"
+    "zotero-plugin": "^1.2.3"
   },
   "xpi": {
     "name": "Zotodo",
