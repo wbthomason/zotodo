@@ -170,7 +170,7 @@ class TodoistAPI {
     }
 
     const createResponse = await fetch(
-      'https://api.todoist.com/rest/v1/tasks',
+      'https://api.todoist.com/rest/v2/tasks',
       {
         method: 'POST',
         headers: createHeaders,
@@ -199,7 +199,7 @@ class TodoistAPI {
       }
 
       const noteResponse = await fetch(
-        'https://api.todoist.com/rest/v1/comments',
+        'https://api.todoist.com/rest/v2/comments',
         {
           method: 'POST',
           headers: noteHeaders,
@@ -316,7 +316,7 @@ class TodoistAPI {
     }
 
     const payload = { name: section_name, project_id }
-    const response = await fetch('https://api.todoist.com/rest/v1/sections', {
+    const response = await fetch('https://api.todoist.com/rest/v2/sections', {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
@@ -346,7 +346,7 @@ class TodoistAPI {
     }
 
     const payload = { name: project_name }
-    const response = await fetch('https://api.todoist.com/rest/v1/projects', {
+    const response = await fetch('https://api.todoist.com/rest/v2/projects', {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
@@ -376,7 +376,7 @@ class TodoistAPI {
     }
 
     const payload = { name: label_name }
-    const response = await fetch('https://api.todoist.com/rest/v1/labels', {
+    const response = await fetch('https://api.todoist.com/rest/v2/labels', {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
@@ -437,17 +437,17 @@ class TodoistAPI {
     }
 
     return this.getAll(
-      `https://api.todoist.com/rest/v1/sections?project_id=${project_id}`,
+      `https://api.todoist.com/rest/v2/sections?project_id=${project_id}`,
       progWin
     )
   }
 
   private async getProjects(progWin: object): Promise<Record<string, number>> {
-    return this.getAll('https://api.todoist.com/rest/v1/projects', progWin)
+    return this.getAll('https://api.todoist.com/rest/v2/projects', progWin)
   }
 
   private async getLabels(progWin: object): Promise<Record<string, number>> {
-    return this.getAll('https://api.todoist.com/rest/v1/labels', progWin)
+    return this.getAll('https://api.todoist.com/rest/v2/labels', progWin)
   }
 }
 
