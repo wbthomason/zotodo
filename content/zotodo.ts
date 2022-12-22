@@ -1,12 +1,13 @@
 declare const Zotero: any
-declare const window: any
+// declare const window: any
 
-const marker = 'ZotodoMonkeyPatched'
+const monkey_patch_marker = 'ZotodoMonkeyPatched'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-inner-declarations, prefer-arrow/prefer-arrow-functions
 function patch(object, method, patcher) {
-  if (object[method][marker]) return
+  if (object[method][monkey_patch_marker]) return
   object[method] = patcher(object[method])
-  object[method][marker] = true
+  object[method][monkey_patch_marker] = true
 }
 
 function getPref(pref_name: string): any {
@@ -33,13 +34,15 @@ function showSuccess(task_data: TaskData, progWin: object) {
   )
 }
 
+const NOTIFICATION_DURATION = 3000
+
 function show(
   icon: string,
   headline: string,
   body: string,
   win?: object,
-  done: boolean = false,
-  duration: number = 3000
+  done = false,
+  duration = NOTIFICATION_DURATION
 ) {
   const progressWindow =
     win || new Zotero.ProgressWindow({ closeOnClick: true })
@@ -53,7 +56,7 @@ function show(
     progressWindow.startCloseTimer(duration)
   }
 
-  return progressWindow
+  return progressWindow as object
 }
 
 interface ZoteroCreator {
@@ -111,8 +114,7 @@ class TodoistAPI {
   }
 
   public async createTask(task_data: TaskData) {
-    const icon = `chrome://zotero/skin/spinner-16px${
-      Zotero.hiDPI ? '@2x' : ''
+    const icon = `chrome://zotero/skin/spinner-16px${Zotero.hiDPI ? '@2x' : ''
     }.png`
     const progWin = show(icon, 'Creating task', 'Making Todoist task for item')
     if (this.token == null || this.token === '') {
@@ -224,7 +226,7 @@ class TodoistAPI {
     project_name: string,
     progress_win: object
   ): Promise<number | null> {
-    if (this.sections[project_name] == undefined) {
+    if (this.sections[project_name] === undefined) {
       const project_sections = await this.getSections(
         project_name,
         progress_win
@@ -451,241 +453,245 @@ class TodoistAPI {
   }
 }
 
-const Zotodo = // tslint:disable-line:variable-name
-  Zotero.Zotodo ||
-  new (class {
-    private initialized: boolean = false
-    private todoist: TodoistAPI
+class Zotodo { // tslint:disable-line:variable-name
+  private initialized = false
+  private todoist: TodoistAPI
+  private globals: Record<string, any>
 
-    private notifierCallback: object = {
-      notify(event: string, type: string, ids: number[], _: object) {
-        if (getPref('automatic_add') && type === 'item' && event === 'add') {
-          const items = Zotero.Items.get(ids)
-            .map((item: ZoteroItem) => {
-              item.itemType = Zotero.ItemTypes.getName(item.itemTypeID)
-              return item
-            })
-            .filter(
-              (item: ZoteroItem) =>
-                item.itemType !== 'attachment' && item.itemType !== 'note'
-            )
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async load(globals: Record<string, any>) {
+    this.globals = globals
 
-          for (const item of items) {
-            Zotero.log(`Making task for ${JSON.stringify(item)}`)
-            Zotodo.makeTaskForItem(item)
-          }
+    if (this.initialized) return
+    this.initialized = true
+    void this.init()
+  }
+
+
+  private notifierCallback: object = {
+    notify: (event: string, type: string, ids: number[], _: object) => {
+      if (getPref('automatic_add') && type === 'item' && event === 'add') {
+        const items = Zotero.Items.get(ids)
+          .map((item: ZoteroItem) => {
+            item.itemType = Zotero.ItemTypes.getName(item.itemTypeID)
+            return item
+          })
+          .filter(
+            (item: ZoteroItem) =>
+              item.itemType !== 'attachment' && item.itemType !== 'note'
+          )
+
+        for (const item of items) {
+          Zotero.log(`Making task for ${JSON.stringify(item)}`)
+          Zotero.Zotodo.makeTaskForItem(item)
         }
-      },
-    }
-
-    constructor() {
-      window.addEventListener(
-        'load',_ => {
-          this.init().catch(err => Zotero.logError(err))
-        },
-        false
-      )
-    }
-
-    public async openPreferenceWindow(paneID: any, action: any) {
-      const io = { pane: paneID, action }
-      window.openDialog(
-        'chrome://zotodo/content/options.xul',
-        'zotodo-options',
-        'chrome,titlebar,toolbar,centerscreen' +
-          Zotero.Prefs.get('browser.preferences.instantApply', true)
-          ? 'dialog=no'
-          : 'modal',
-        io
-      )
-    }
-
-    public async makeTaskForSelectedItems() {
-      const items = Zotero.getActiveZoteroPane()
-        .getSelectedItems()
-        .filter(
-          (item: ZoteroItem) =>
-            Zotero.ItemTypes.getName(item.itemTypeID) !== 'attachment' &&
-            Zotero.ItemTypes.getName(item.itemTypeID) !== 'note'
-        )
-
-      for (const item of items) {
-        this.makeTaskForItem(item)
       }
+    },
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async openPreferenceWindow(paneID: any, action: any) {
+    const io = { pane: paneID, action }
+    this.globals.window.openDialog(
+      'chrome://zotodo/content/options.xul',
+      'zotodo-options',
+      // eslint-disable-next-line no-constant-condition
+      `chrome,titlebar,toolbar,centerscreen${Zotero.Prefs.get('browser.preferences.instantApply', true)}`
+        ? 'dialog=no'
+        : 'modal',
+      io
+    )
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async makeTaskForSelectedItems() {
+    const items = Zotero.getActiveZoteroPane()
+      .getSelectedItems()
+      .filter(
+        (item: ZoteroItem) =>
+          Zotero.ItemTypes.getName(item.itemTypeID) !== 'attachment' &&
+          Zotero.ItemTypes.getName(item.itemTypeID) !== 'note'
+      )
+
+    for (const item of (items as ZoteroItem[])) {
+      void this.makeTaskForItem(item)
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  private async init() {
+    if (this.initialized) {
+      return
     }
 
-    private async init() {
-      if (this.initialized) {
+    // Get Todoist information
+    const todoist_token: string = getPref('todoist_token')
+    this.todoist = new TodoistAPI(todoist_token)
+
+    // Register notifier
+    const notifierID = Zotero.Notifier.registerObserver(
+      this.notifierCallback,
+      ['item']
+    )
+
+    // Unregister notifier when window closes to avoid memory leak
+    window.addEventListener(
+      'unload', _ => {
+        Zotero.Notifier.unregisterObserver(notifierID)
+      },
+      false
+    )
+
+    this.initialized = true
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  private async makeTaskForItem(item: ZoteroItem) {
+    // Get the current preference values
+    const due_string: string = getPref('due_string')
+    const label_names_string: string = getPref('labels') as string
+    let label_names: string[] = []
+    if (label_names_string !== '') {
+      label_names = label_names_string.split(',')
+    }
+
+    const ignore_collections: string[] = (getPref(
+      'ignore_collections'
+    ) as string).split(',')
+    // Priority is the reverse of what you'd expect from the p1, p2, etc. pattern
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    const priority: number = 5 - getPref('priority')
+    const project_name: string = getPref('project')
+    const section_name: string = getPref('section')
+
+    const set_due: boolean = getPref('set_due')
+    const include_note: boolean = getPref('include_note')
+    let note_format: string = getPref('note_format')
+    let task_format: string = getPref('task_format')
+
+    // Is the item in an ignored collection?
+    const item_collections = item
+      .getCollections()
+      .map(id => Zotero.Collections.get(id).name as string)
+    for (const ignored_name of ignore_collections) {
+      if (item_collections.includes(ignored_name)) {
         return
       }
-
-      // Get Todoist information
-      const todoist_token: string = getPref('todoist_token')
-      this.todoist = new TodoistAPI(todoist_token)
-
-      // Register notifier
-      const notifierID = Zotero.Notifier.registerObserver(
-        this.notifierCallback,
-        ['item']
-      )
-
-      // Unregister notifier when window closes to avoid memory leak
-      window.addEventListener(
-        'unload',_ => {
-          Zotero.Notifier.unregisterObserver(notifierID)
-        },
-        false
-      )
-
-      this.initialized = true
     }
 
-    private async makeTaskForItem(item: ZoteroItem) {
-      // Get the current preference values
-      const due_string: string = getPref('due_string')
-      const label_names_string: string = getPref('labels') as string
-      let label_names: string[] = []
-      if (label_names_string !== '') {
-        label_names = label_names_string.split(',')
-      }
-
-      const ignore_collections: string[] = (getPref(
-        'ignore_collections'
-      ) as string).split(',')
-      // Priority is the reverse of what you'd expect from the p1, p2, etc. pattern
-      const priority: number = 5 - getPref('priority') // tslint:disable-line:no-magic-numbers
-      const project_name: string = getPref('project')
-      const section_name: string = getPref('section')
-
-      const set_due: boolean = getPref('set_due')
-      const include_note: boolean = getPref('include_note')
-      let note_format: string = getPref('note_format')
-      let task_format: string = getPref('task_format')
-
-      // Is the item in an ignored collection?
-      const item_collections = item
-        .getCollections()
-        .map(id => Zotero.Collections.get(id).name)
-      for (const ignored_name of ignore_collections) {
-        if (item_collections.includes(ignored_name)) {
-          return
+    const title: string = item.getField('title', false, true)
+    const abstract: string = item.getField('abstractNote', false, true)
+    const url: string = item.getField('url', false, true)
+    const doi: string = item.getField('DOI', false, true)
+    let pdf_path = ''
+    let pdf_id = -1
+    const attachments: number[] = item.getAttachments()
+    if (attachments.length > 0) {
+      for (const id of attachments) {
+        const attachment = Zotero.Items.get(id)
+        if (attachment.attachmentContentType === 'application/pdf') {
+          pdf_path = attachment.attachmentPath
+          pdf_id = attachment.key
+          break
         }
       }
-
-      const title: string = item.getField('title', false, true)
-      const abstract: string = item.getField('abstractNote', false, true)
-      const url: string = item.getField('url', false, true)
-      const doi: string = item.getField('DOI', false, true)
-      let pdf_path = ''
-      let pdf_id = -1
-      const attachments: number[] = item.getAttachments()
-      if (attachments.length > 0) {
-        for (const id of attachments) {
-          const attachment = Zotero.Items.get(id)
-          if (attachment.attachmentContentType === 'application/pdf') {
-            pdf_path = attachment.attachmentPath
-            pdf_id = attachment.key
-            break
-          }
-        }
-      }
-
-      const author_type_id: number = Zotero.CreatorTypes.getPrimaryIDForType(
-        item.itemTypeID
-      )
-
-      const author_names: string[] = item
-        .getCreators()
-        .filter(
-          (creator: ZoteroCreator) => creator.creatorTypeID === author_type_id
-        )
-        .map(
-          (creator: ZoteroCreator) => `${creator.firstName} ${creator.lastName}`
-        )
-
-      let et_al: string = ''
-      if (author_names.length > 0) {
-        et_al = author_names[0] + ' et al.'
-      }
-
-      const authors = author_names.join(', ')
-      const item_id = item.key
-      let library_path = 'library'
-      if (Zotero.Libraries.get(item.libraryID).libraryType === 'group') {
-        library_path = Zotero.URI.getLibraryPath(item.libraryID)
-      }
-
-      const select_uri = `zotero://select/${library_path}/items/${item_id}`
-      let citekey = ''
-      if (
-        typeof Zotero.BetterBibTeX === 'object' &&
-        Zotero.BetterBibTeX !== null
-      ) {
-        citekey = Zotero.BetterBibTeX.KeyManager.get(
-          item.getField('id', false, true)
-        ).citekey
-      }
-
-      const tokens = {
-        title,
-        abstract,
-        url,
-        doi,
-        pdf_path,
-        pdf_id,
-        et_al,
-        authors,
-        item_id,
-        select_uri,
-        citekey,
-      }
-
-      for (const token_name of Object.keys(tokens)) {
-        const pos_pat = RegExp(`\\?\\$\\{${token_name}\\}:([^?]*)\\?`, 'gm')
-        const neg_pat = RegExp(`!\\$\\{${token_name}\\}:([^!]*)!`, 'gm')
-        const token_defined =
-          tokens[token_name] != null && tokens[token_name] !== ''
-        if (token_defined) {
-          note_format = note_format.replace(pos_pat, '$1')
-          task_format = task_format.replace(pos_pat, '$1')
-          note_format = note_format.replace(neg_pat, '')
-          task_format = task_format.replace(neg_pat, '')
-        } else {
-          note_format = note_format.replace(neg_pat, '$1')
-          task_format = task_format.replace(neg_pat, '$1')
-          note_format = note_format.replace(pos_pat, '')
-          task_format = task_format.replace(pos_pat, '')
-        }
-      }
-
-      // tslint:disable:no-eval prefer-template
-      const note_contents: string = eval('`' + note_format + '`')
-      const task_contents: string = eval('`' + task_format + '`')
-      // tslint:enable:no-eval prefer-template
-      const task_data = new TaskData(
-        task_contents,
-        priority,
-        project_name,
-        label_names
-      )
-
-      if (include_note) {
-        task_data.note = note_contents
-      }
-
-      if (set_due) {
-        task_data.due_string = due_string
-      }
-
-      if (section_name !== '') {
-        task_data.section_name = section_name
-      }
-
-      this.todoist.createTask(task_data)
     }
-  })()
 
-export = Zotodo
+    const author_type_id: number = Zotero.CreatorTypes.getPrimaryIDForType(
+      item.itemTypeID
+    )
 
-// otherwise this entry point won't be reloaded: https://github.com/webpack/webpack/issues/156
-delete require.cache[module.id]
+    const author_names: string[] = item
+      .getCreators()
+      .filter(
+        (creator: ZoteroCreator) => creator.creatorTypeID === author_type_id
+      )
+      .map(
+        (creator: ZoteroCreator) => `${creator.firstName} ${creator.lastName}`
+      )
+
+    let et_al = ''
+    if (author_names.length > 0) {
+      et_al = `${author_names[0]} et al.`
+    }
+
+    const authors = author_names.join(', ')
+    const item_id = item.key
+    let library_path = 'library'
+    if (Zotero.Libraries.get(item.libraryID).libraryType === 'group') {
+      library_path = Zotero.URI.getLibraryPath(item.libraryID)
+    }
+
+    const select_uri = `zotero://select/${library_path}/items/${item_id}`
+    let citekey = ''
+    if (
+      typeof Zotero.BetterBibTeX === 'object' &&
+      Zotero.BetterBibTeX !== null
+    ) {
+      citekey = Zotero.BetterBibTeX.KeyManager.get(
+        item.getField('id', false, true)
+      ).citekey
+    }
+
+    const tokens = {
+      title,
+      abstract,
+      url,
+      doi,
+      pdf_path,
+      pdf_id,
+      et_al,
+      authors,
+      item_id,
+      select_uri,
+      citekey,
+    }
+
+    for (const token_name of Object.keys(tokens)) {
+      const pos_pat = RegExp(`\\?\\$\\{${token_name}\\}:([^?]*)\\?`, 'gm')
+      const neg_pat = RegExp(`!\\$\\{${token_name}\\}:([^!]*)!`, 'gm')
+      const token_defined =
+        tokens[token_name] != null && tokens[token_name] !== ''
+      if (token_defined) {
+        note_format = note_format.replace(pos_pat, '$1')
+        task_format = task_format.replace(pos_pat, '$1')
+        note_format = note_format.replace(neg_pat, '')
+        task_format = task_format.replace(neg_pat, '')
+      }
+      else {
+        note_format = note_format.replace(neg_pat, '$1')
+        task_format = task_format.replace(neg_pat, '$1')
+        note_format = note_format.replace(pos_pat, '')
+        task_format = task_format.replace(pos_pat, '')
+      }
+    }
+
+    // eslint-disable-next-line no-eval
+    const note_contents: string = eval(`\`${note_format}\``)
+    // eslint-disable-next-line no-eval
+    const task_contents: string = eval(`\`${task_format}\``)
+    // tslint:enable:no-eval prefer-template
+    const task_data = new TaskData(
+      task_contents,
+      priority,
+      project_name,
+      label_names
+    )
+
+    if (include_note) {
+      task_data.note = note_contents
+    }
+
+    if (set_due) {
+      task_data.due_string = due_string
+    }
+
+    if (section_name !== '') {
+      task_data.section_name = section_name
+    }
+
+    void this.todoist.createTask(task_data)
+  }
+}
+
+if (!Zotero.Zotodo) Zotero.Zotodo = new Zotodo
