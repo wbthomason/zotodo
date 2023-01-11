@@ -22,7 +22,7 @@
   </menupopup>
 
   <!-- Include the main extension logic -->
-  <script src="chrome://zotodo/content/Zotodo.js"/>
+  <script src="chrome://zotodo/content/zotodo.js"/>
   <script>
     window.addEventListener('load', async function() {
       try {
