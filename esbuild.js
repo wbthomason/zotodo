@@ -13,7 +13,7 @@ async function build() {
     bundle: true,
     format: 'iife',
     target: ['firefox60'],
-    entryPoints: [ 'content/zotodo.ts' ],
+    entryPoints: [ 'content/zotodo.ts', 'content/options.ts' ],
     outdir: 'build/content',
   })
 }

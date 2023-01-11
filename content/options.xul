@@ -76,8 +76,6 @@
       <textbox id="id-zotodo-ignore-collections" preference="pref-zotodo-ignore-collections" flex="1"/>
     </groupbox>
 
-    <script src="chrome://zotero/content/include.js"/>
-    <script src="chrome://zotodo/content/webpack.js"/>
-    <script src="chrome://zotodo/content/Zotodo.Options.js"/>
+    <script src="chrome://zotodo/content/options.js"/>
   </prefpane>
 </prefwindow>
