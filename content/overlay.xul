@@ -5,8 +5,8 @@
 <overlay id="zotodo-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script>
-    var globals = (new Function('return this')());
-    var zotero_foobar_zoteropane = null;
+    var globals = Function('return this')();
+    var zotero_zoteropane = null;
   </script>
   <menupopup id="zotero-itemmenu">
     <menuseparator id="id-zotodo-separator"/>
@@ -26,11 +26,11 @@
   <script>
     window.addEventListener('load', async function() {
       try {
-        Zotero.debug('Zotodo startup')
+        Zotero.debug('zotodo startup')
         await Zotero.Zotodo.load(globals)
-        Zotero.debug('Zotodo started')
+        Zotero.debug('zotodo started')
       } catch (err) {
-        Zotero.debug(`Zotodo ZoteroPane overlay error: ${err.message}\n${err.stack ||''}`)
+        Zotero.debug(`zotodo ZoteroPane overlay error: ${err.message}\n${err.stack ||''}`)
       }
     })
   </script>
