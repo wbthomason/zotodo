@@ -3,9 +3,9 @@
   "version": "0.8.2",
   "description": "Add papers imported to Zotero as Todoist tasks",
   "scripts": {
-    "lint": "tslint -t stylish --project .",
+    "lint": "eslint . --ext .ts --cache --cache-location .eslintcache/",
     "prebuild": "npm run lint",
-    "build": "webpack",
+    "build": "tsc --noEmit && node esbuild.js",
     "postbuild": "zotero-plugin-zipup build zotodo",
     "release": "zotero-plugin-release",
     "postversion": "git push --follow-tags"
@@ -23,15 +23,19 @@
   },
   "homepage": "https://github.com/wbthomason/zotodo",
   "dependencies": {
-    "circular-dependency-plugin": "^5.2.0",
-    "post-compile-webpack-plugin": "^0.1.2",
+        "@types/mocha": "^9.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "esbuild": "^0.14.51",
+    "eslint": "^8.21.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.3.4",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
-    "ts-loader": "^7.0.5",
-    "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "zotero-plugin": "^1.2.3"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "zotero-plugin": "^1.4.8"
   },
   "xpi": {
     "name": "Zotodo",

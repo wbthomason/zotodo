@@ -4,22 +4,34 @@
 
 <overlay id="zotodo-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script>
+    var globals = Function('return this')();
+    var zotero_zoteropane = null;
+  </script>
+  <menupopup id="zotero-itemmenu">
+    <menuseparator id="id-zotodo-separator"/>
+    <menuitem id="id-zotodo-make-task" label="&zotodo-make-task.label;" tooltiptext="&zotodo-make-task.tooltiptext;" oncommand="Zotero.Zotodo.makeTaskForSelectedItems();"/>
+  </menupopup>
 
-<menupopup id="zotero-itemmenu">
-  <menuseparator id="id-zotodo-separator"/>
-  <menuitem id="id-zotodo-make-task" label="&zotodo-make-task.label;" tooltiptext="&zotodo-make-task.tooltiptext;" oncommand="Zotero.Zotodo.makeTaskForSelectedItems();"/>
-</menupopup>
+  <menupopup id="zotero-tb-actions-popup">
+    <menuitem id="zotodo-options" insertafter="zotero-tb-actions-prefs" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
+  </menupopup>
 
-<menupopup id="zotero-tb-actions-popup">
-  <menuitem id="zotodo-options" insertafter="zotero-tb-actions-prefs" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
-</menupopup>
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="zotodo-options" insertafter="menu_preferences" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
+  </menupopup>
 
-<menupopup id="menu_ToolsPopup">
-  <menuitem id="zotodo-options" insertafter="menu_preferences" label="&zotodo-options.label;" oncommand="Zotero.Zotodo.openPreferenceWindow();"/>
-</menupopup>
-
-<!-- Include the main extension logic -->
-<script src="chrome://zotero/content/include.js"/>
-<script src="chrome://zotodo/content/webpack.js"/>
-<script src="chrome://zotodo/content/Zotodo.js"/>
+  <!-- Include the main extension logic -->
+  <script src="chrome://zotodo/content/zotodo.js"/>
+  <script>
+    window.addEventListener('load', async function() {
+      try {
+        Zotero.debug('zotodo startup')
+        await Zotero.Zotodo.load(globals)
+        Zotero.debug('zotodo started')
+      } catch (err) {
+        Zotero.debug(`zotodo ZoteroPane overlay error: ${err.message}\n${err.stack ||''}`)
+      }
+    })
+  </script>
 </overlay>

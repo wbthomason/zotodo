@@ -1,11 +1,8 @@
-declare const Zotero: any
-declare const document: any
-
 interface ZoteroBooleanPreference {
   value: boolean
 }
 
-const Options = new (class { // tslint:disable-line:variable-name
+class Options { // tslint:disable-line:variable-name
   public updatePreferenceWindow(which: string) {
     switch (which) {
       case 'init-all':
@@ -26,8 +23,8 @@ const Options = new (class { // tslint:disable-line:variable-name
   private disablePref(setting_name: string, to_disable: string, revert: boolean) {
     let setting_val: boolean = (document.getElementById(
       `pref-zotodo-${setting_name}`
-    ) as ZoteroBooleanPreference).value
-    if(revert) {
+    ) as unknown as ZoteroBooleanPreference).value
+    if (revert) {
       setting_val = !setting_val
     }
 
@@ -35,9 +32,6 @@ const Options = new (class { // tslint:disable-line:variable-name
       `id-zotodo-${to_disable}`
     ) as HTMLInputElement).disabled = !setting_val
   }
-})()
+}
 
-export = Options
-
-// otherwise this entry point won't be reloaded: https://github.com/webpack/webpack/issues/156
-delete require.cache[module.id]
+if (!Zotero.Zotodo.Options) Zotero.Zotodo.Options = new Options
