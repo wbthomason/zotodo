@@ -461,10 +461,9 @@ class Zotodo { // tslint:disable-line:variable-name
   // eslint-disable-next-line @typescript-eslint/require-await
   public async load(globals: Record<string, any>) {
     this.globals = globals
-
     if (this.initialized) return
+    await this.init()
     this.initialized = true
-    void this.init()
   }
 
 
