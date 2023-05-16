@@ -12,6 +12,7 @@ Scaffolded with the wonderful
 - Customizable project, section, and due date settings
 - Customizable labels for tasks
 - Generate Zotero select links
+- Generate Zotero PDF opening links
 
 ## Installation
 1. Download the [latest version](https://github.com/wbthomason/zotodo/releases/latest) of the `.xpi`.
@@ -32,4 +33,5 @@ Scaffolded with the wonderful
 - [x] Create project/labels if nonexistent
 - [ ] OAuth flow for getting authorization key
 - [ ] Set project by Zotero collection
-- [ ] Add more template tokens
+- [x] Add more template tokens
+- [ ] Switch to official Todoist API client

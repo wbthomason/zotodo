@@ -115,7 +115,7 @@ class TodoistAPI {
 
   public async createTask(task_data: TaskData) {
     const icon = `chrome://zotero/skin/spinner-16px${Zotero.hiDPI ? '@2x' : ''
-    }.png`
+      }.png`
     const progWin = show(icon, 'Creating task', 'Making Todoist task for item')
     if (this.token == null || this.token === '') {
       this.token = getPref('todoist_token')
@@ -622,6 +622,8 @@ class Zotodo { // tslint:disable-line:variable-name
     }
 
     const select_uri = `zotero://select/${library_path}/items/${item_id}`
+    let open_uri = ''
+    if (pdf_id != -1) { open_uri = `zotero://open-pdf/${library_path}/items/${item_id}` }
     let citekey = ''
     if (
       typeof Zotero.BetterBibTeX === 'object' &&
@@ -641,8 +643,10 @@ class Zotodo { // tslint:disable-line:variable-name
       pdf_id,
       et_al,
       authors,
+      library_path,
       item_id,
       select_uri,
+      open_uri,
       citekey,
     }
 
