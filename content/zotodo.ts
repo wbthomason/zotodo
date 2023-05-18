@@ -623,7 +623,7 @@ class Zotodo { // tslint:disable-line:variable-name
 
     const select_uri = `zotero://select/${library_path}/items/${item_id}`
     let open_uri = ''
-    if (pdf_id !== -1) { open_uri = `zotero://open-pdf/${library_path}/items/${item_id}` }
+    if (pdf_id !== -1) { open_uri = `zotero://open-pdf/${library_path}/items/${pdf_id}` }
     let citekey = ''
     if (
       typeof Zotero.BetterBibTeX === 'object' &&
